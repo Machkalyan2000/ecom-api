@@ -74,9 +74,14 @@ class OrderController extends Controller
             $query->where('status', $status);
         }
 
-        $orders = $query->orderBy('created_at', 'desc')->get();
+        if ($request->has('sort_date')) {
+            $direction = $request->get('sort_date') === 'desc' ? 'desc' : 'asc';
+            $orders = $query->orderBy('created_at', $direction);
+        } else {
+            $orders = $query->orderBy('created_at', 'desc');
+        }
 
-        return response()->json($orders);
+        return response()->json($orders->get());
     }
 
     public function show(Order $order)
